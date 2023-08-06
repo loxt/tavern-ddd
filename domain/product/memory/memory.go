@@ -49,6 +49,19 @@ func (mpr *MemoryProductRepository) Update(update aggregate.Product) error {
 	return nil
 }
 
+func (mpr *MemoryProductRepository) Create(newprod aggregate.Product) error {
+	mpr.Lock()
+	defer mpr.Unlock()
+
+	if _, ok := mpr.products[newprod.GetID()]; ok {
+		return product.ErrProductAlreadyExists
+	}
+
+	mpr.products[newprod.GetID()] = newprod
+
+	return nil
+}
+
 func (mpr *MemoryProductRepository) Delete(id uuid.UUID) error {
 	mpr.Lock()
 	defer mpr.Unlock()
