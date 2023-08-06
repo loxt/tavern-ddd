@@ -1,9 +1,8 @@
-package services
+package order
 
 import (
 	"context"
 	"github.com/google/uuid"
-	"github.com/loxt/tavern-ddd/aggregate"
 	"github.com/loxt/tavern-ddd/domain/customer"
 	"github.com/loxt/tavern-ddd/domain/customer/memory"
 	"github.com/loxt/tavern-ddd/domain/customer/mongo"
@@ -15,8 +14,8 @@ import (
 type OrderConfiguration func(os *OrderService) error
 
 type OrderService struct {
-	customers customer.CustomerRepository
-	products  product.ProductRepository
+	customers customer.Repository
+	products  product.Repository
 }
 
 func NewOrderService(configs ...OrderConfiguration) (*OrderService, error) {
@@ -31,14 +30,14 @@ func NewOrderService(configs ...OrderConfiguration) (*OrderService, error) {
 	return os, nil
 }
 
-func WithCustomerRepository(cr customer.CustomerRepository) OrderConfiguration {
+func WithCustomerRepository(cr customer.Repository) OrderConfiguration {
 	return func(os *OrderService) error {
 		os.customers = cr
 		return nil
 	}
 }
 
-func WithMemoryProductRepository(products []aggregate.Product) OrderConfiguration {
+func WithMemoryProductRepository(products []product.Product) OrderConfiguration {
 	return func(os *OrderService) error {
 		pr := prodMem.NewMemoryProductRepository()
 
@@ -78,7 +77,7 @@ func (o *OrderService) CreateOrder(customerID uuid.UUID, productsIDs []uuid.UUID
 		return 0, err
 	}
 
-	var products []aggregate.Product
+	var products []product.Product
 	var total float64
 
 	for _, id := range productsIDs {
@@ -94,4 +93,20 @@ func (o *OrderService) CreateOrder(customerID uuid.UUID, productsIDs []uuid.UUID
 
 	log.Printf("Customer: %s has ordered %d products", c.GetID(), len(products))
 	return total, nil
+}
+
+func (o *OrderService) CreateCustomer(name string) (uuid.UUID, error) {
+	c, err := customer.NewCustomer(name)
+
+	if err != nil {
+		return uuid.Nil, err
+	}
+
+	err = o.customers.Create(c)
+
+	if err != nil {
+		return uuid.Nil, err
+	}
+
+	return c.GetID(), nil
 }

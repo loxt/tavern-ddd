@@ -1,8 +1,8 @@
-package aggregate_test
+package customer_test
 
 import (
 	"errors"
-	"github.com/loxt/tavern-ddd/aggregate"
+	"github.com/loxt/tavern-ddd/domain/customer"
 	"testing"
 )
 
@@ -17,7 +17,7 @@ func TestNewCustomer(t *testing.T) {
 		{
 			test:        "Empty name validation",
 			name:        "",
-			expectedErr: aggregate.ErrInvalidPerson,
+			expectedErr: customer.ErrInvalidPerson,
 		},
 		{
 			test:        "Valid name",
@@ -28,7 +28,7 @@ func TestNewCustomer(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := aggregate.NewCustomer(tc.name)
+			_, err := customer.NewCustomer(tc.name)
 
 			if !errors.Is(err, tc.expectedErr) {
 				t.Errorf("expected error %v, got %v", tc.expectedErr, err)

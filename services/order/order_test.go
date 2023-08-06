@@ -1,31 +1,32 @@
-package services
+package order
 
 import (
 	"github.com/google/uuid"
-	"github.com/loxt/tavern-ddd/aggregate"
+	"github.com/loxt/tavern-ddd/domain/customer"
+	"github.com/loxt/tavern-ddd/domain/product"
 	"testing"
 )
 
-func init_products(t *testing.T) []aggregate.Product {
-	beer, err := aggregate.NewProduct("Beer", "A nice cold beer", 2.99)
+func init_products(t *testing.T) []product.Product {
+	beer, err := product.NewProduct("Beer", "A nice cold beer", 2.99)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	peanuts, err := aggregate.NewProduct("Peanuts", "A bag of peanuts", 1.99)
+	peanuts, err := product.NewProduct("Peanuts", "A bag of peanuts", 1.99)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	wine, err := aggregate.NewProduct("Wine", "A nice bottle of wine", 9.99)
+	wine, err := product.NewProduct("Wine", "A nice bottle of wine", 9.99)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	return []aggregate.Product{beer, peanuts, wine}
+	return []product.Product{beer, peanuts, wine}
 }
 
 func TestOrder_NewOrderService(t *testing.T) {
@@ -37,7 +38,7 @@ func TestOrder_NewOrderService(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	cust, err := aggregate.NewCustomer("Emannuel")
+	cust, err := customer.NewCustomer("Emannuel")
 
 	if err != nil {
 		t.Error(err)

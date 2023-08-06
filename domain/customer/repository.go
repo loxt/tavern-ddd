@@ -3,7 +3,6 @@ package customer
 import (
 	"errors"
 	"github.com/google/uuid"
-	"github.com/loxt/tavern-ddd/aggregate"
 )
 
 var (
@@ -12,8 +11,8 @@ var (
 	ErrFailedToUpdateCustomer = errors.New("failed to update customer")
 )
 
-type CustomerRepository interface {
-	Get(uuid uuid.UUID) (aggregate.Customer, error)
-	Create(aggregate.Customer) error
-	Update(aggregate.Customer) error
+type Repository interface {
+	Get(uuid uuid.UUID) (Customer, error)
+	Create(Customer) error
+	Update(Customer) error
 }

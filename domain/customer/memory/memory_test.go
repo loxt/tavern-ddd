@@ -3,7 +3,6 @@ package memory
 import (
 	"errors"
 	"github.com/google/uuid"
-	"github.com/loxt/tavern-ddd/aggregate"
 	"github.com/loxt/tavern-ddd/domain/customer"
 	"testing"
 )
@@ -15,7 +14,7 @@ func TestMemory_GetCustom(t *testing.T) {
 		expectedErr error
 	}
 
-	cust, err := aggregate.NewCustomer("Emannuel")
+	cust, err := customer.NewCustomer("Emannuel")
 
 	if err != nil {
 		t.Fatal(err)
@@ -24,7 +23,7 @@ func TestMemory_GetCustom(t *testing.T) {
 	id := cust.GetID()
 
 	repo := MemoryRepository{
-		customers: map[uuid.UUID]aggregate.Customer{
+		customers: map[uuid.UUID]customer.Customer{
 			id: cust,
 		},
 	}
