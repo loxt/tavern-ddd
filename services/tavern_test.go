@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"github.com/google/uuid"
 	"github.com/loxt/tavern-ddd/aggregate"
 	"testing"
@@ -9,7 +10,8 @@ import (
 func Test_Tavern(t *testing.T) {
 	products := init_products(t)
 
-	os, err := NewOrderService(WithMemoryCustomerRepository(), WithMemoryProductRepository(products))
+	os, err := NewOrderService(WithMongoCustomerRepository(context.Background(), "mongodb://root:docker@localhost:27017"),
+		WithMemoryProductRepository(products))
 
 	if err != nil {
 		t.Fatal(err)

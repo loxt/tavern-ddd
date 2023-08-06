@@ -1,10 +1,12 @@
 package services
 
 import (
+	"context"
 	"github.com/google/uuid"
 	"github.com/loxt/tavern-ddd/aggregate"
 	"github.com/loxt/tavern-ddd/domain/customer"
 	"github.com/loxt/tavern-ddd/domain/customer/memory"
+	"github.com/loxt/tavern-ddd/domain/customer/mongo"
 	"github.com/loxt/tavern-ddd/domain/product"
 	prodMem "github.com/loxt/tavern-ddd/domain/product/memory"
 	"log"
@@ -54,6 +56,19 @@ func WithMemoryProductRepository(products []aggregate.Product) OrderConfiguratio
 func WithMemoryCustomerRepository() OrderConfiguration {
 	cr := memory.NewMemoryRepository()
 	return WithCustomerRepository(cr)
+}
+
+func WithMongoCustomerRepository(ctx context.Context, connStr string) OrderConfiguration {
+	return func(os *OrderService) error {
+		cr, err := mongo.NewMongoRepository(ctx, connStr)
+
+		if err != nil {
+			return err
+		}
+
+		os.customers = cr
+		return nil
+	}
 }
 
 func (o *OrderService) CreateOrder(customerID uuid.UUID, productsIDs []uuid.UUID) (float64, error) {
